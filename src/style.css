@@ -78,3 +78,29 @@ header nav a{font-size:14px}
   .contact-meta{font-size:13px!important;gap:22px}
   .mail-link{font-size:clamp(19px,6vw,28px);max-width:100%;overflow-wrap:anywhere}
 }
+.cursor-ripples .click-streak{position:absolute;width:clamp(90px,13vw,210px);height:2px;transform-origin:0 50%;transform:rotate(var(--angle)) scaleX(0);background:linear-gradient(90deg,#fff0,var(--gold) 18%,#fff 48%,#65ddff 70%,transparent);box-shadow:0 0 14px #e9b54e99;animation:clickStreak 2s cubic-bezier(.2,.7,.15,1) forwards}
+@keyframes clickStreak{0%{opacity:0;transform:rotate(var(--angle)) scaleX(0)}12%{opacity:1;transform:rotate(var(--angle)) scaleX(1)}72%{opacity:.7;transform:rotate(var(--angle)) scaleX(.72)}100%{opacity:0;transform:rotate(var(--angle)) translateX(45px) scaleX(0)}}
+
+/* Professional animated fallback for browsers where WebGL is unavailable */
+.fallback-props{position:absolute;inset:0;perspective:900px;transform-style:preserve-3d}
+.fallback-props>span{position:absolute;display:block;transform-style:preserve-3d;filter:drop-shadow(0 28px 28px #0009);animation:propOrbit 8s ease-in-out infinite}
+.fallback-props i{position:absolute!important;display:block!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;width:auto!important;height:auto!important;transform:none!important;border-radius:0!important;animation:none!important;box-shadow:none!important}
+.fallback-laptop{width:280px;height:170px;right:13%;top:31%;border:8px solid #202b33;border-radius:8px;background:linear-gradient(145deg,#092533,#071019);transform:rotateY(-18deg) rotateX(7deg)}
+.fallback-laptop:after{content:"";position:absolute;width:330px;height:22px;left:-34px;bottom:-32px;background:linear-gradient(90deg,#121a20,#3a4650,#11181d);clip-path:polygon(5% 0,95% 0,100% 100%,0 100%)}
+.fallback-laptop i{inset:22px!important;background:linear-gradient(135deg,transparent 40%,#65ddff 41% 44%,transparent 45%),linear-gradient(70deg,transparent 52%,#e9b54e 53% 58%,transparent 59%)!important;border:1px solid #65ddff42!important}
+.fallback-calculator{width:128px;height:178px;right:46%;top:19%;padding:48px 15px 15px;border:2px solid #57636b;border-radius:15px;background:linear-gradient(145deg,#29343c,#090f14);display:grid!important;grid-template-columns:repeat(3,1fr);gap:9px;animation-delay:-2s!important}
+.fallback-calculator:before{content:"125,000";position:absolute;left:14px;right:14px;top:14px;height:26px;padding:5px;color:#c6f2dc;background:#294239;font:12px monospace;text-align:right}
+.fallback-calculator i{position:relative!important;inset:auto!important;width:auto!important;height:auto!important;border-radius:4px!important;background:#56636b!important;border:0!important}
+.fallback-calculator i:nth-child(3n){background:var(--gold)!important}
+.fallback-document{left:17%;top:25%;width:190px;height:250px;padding:62px 24px 20px;color:#9a6c19;background:#e5dfce;border:1px solid white;font:800 34px Manrope;letter-spacing:.08em;transform:rotateY(14deg) rotateZ(-8deg);animation-delay:-4s!important}
+.fallback-document:before,.fallback-document:after{content:"";position:absolute;left:24px;right:24px;height:4px;background:#77858b;box-shadow:0 18px #9aa3a3,0 36px #9aa3a3,0 54px #9aa3a3}
+.fallback-document:before{top:126px}.fallback-document strong{display:block;margin-top:18px;color:#37505b;font-size:13px}
+.fallback-bike{width:190px;height:95px;right:22%;bottom:15%;animation-delay:-5s!important}
+.fallback-bike i{bottom:0!important;width:62px!important;height:62px!important;border:9px solid #28343c!important;border-radius:50%!important;background:radial-gradient(circle,#e9b54e 0 9%,#111 10% 34%,transparent 35%)!important}
+.fallback-bike i:first-child{left:0}.fallback-bike i:nth-child(2){right:0}.fallback-bike b{position:absolute;left:45px;top:25px;width:100px;height:25px;background:var(--gold);transform:skewX(-25deg);box-shadow:30px -20px 0 -8px #aebbc1}
+.fallback-coins{left:44%;bottom:12%;width:110px;height:100px;animation-delay:-3s!important}
+.fallback-coins i{left:10px!important;width:86px!important;height:24px!important;border-radius:50%!important;border:4px solid #ffd66e!important;background:#b77e20!important}
+.fallback-coins i:nth-child(1){bottom:0}.fallback-coins i:nth-child(2){bottom:18px}.fallback-coins i:nth-child(3){bottom:36px}
+.scene-fallback .fallback-grid{position:absolute;inset:0;background-image:radial-gradient(#ffffff25 1px,transparent 1px);background-size:72px 72px;animation:fallbackDrift 18s linear infinite}
+@keyframes propOrbit{0%,100%{translate:0 0;rotate:0deg}50%{translate:18px -24px;rotate:2deg}}
+@media(max-width:700px){.fallback-laptop{width:190px;height:115px;right:-4%;top:42%}.fallback-laptop:after{width:220px}.fallback-calculator{right:58%;top:55%;scale:.72}.fallback-document{left:4%;top:23%;scale:.65}.fallback-bike{right:4%;bottom:10%;scale:.7}.fallback-coins{left:30%;bottom:8%;scale:.7}}
