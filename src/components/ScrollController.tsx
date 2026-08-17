@@ -1,0 +1,2 @@
+import {useFrame} from "@react-three/fiber";import * as THREE from "three";import {interaction} from "./InteractionManager";
+export function ScrollController(){useFrame(()=>{const target=scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight);interaction.scroll=THREE.MathUtils.lerp(interaction.scroll,target,.065);interaction.section=interaction.scroll*5;interaction.pulse*=.93;interaction.uiEnergy*=.94;interaction.speed*=.9});return null}
