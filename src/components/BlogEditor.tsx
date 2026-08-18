@@ -8,7 +8,7 @@ const parseFaqs=(s:string):FAQ[]=>{try{const x=JSON.parse(s||"[]");return Array.
 function generate(raw:string){
  const lines=raw.replace(/\r/g,"").split("\n"),title=lines.find(x=>/^#\s+/.test(x))?.replace(/^#\s+/,"")||lines.find(x=>x.trim())||"";
  const faqAt=lines.findIndex(x=>/^#{1,4}\s*(faq|faqs|frequently asked questions)\s*$/i.test(x.trim())||/^(faq|faqs|frequently asked questions)\s*:?$/i.test(x.trim()));
- const metadata=/^\s*(title|post title|target keyword|focus keyword|primary keyword|secondary keywords?|suggested url|url slug|slug|meta title|meta description|seo title|seo description|category|short summary|excerpt|author|publish date|date|canonical url)\s*[:|-]\s*/i;
+ const metadata=/^\s*(?:\*\*)?(title|post title|target keyword|focus keyword|primary keyword|secondary keywords?|suggested url|url slug|slug|meta title|meta description|seo title|seo description|category|short summary|excerpt|author|publish date|date|canonical url)(?:\*\*)?\s*[:|-]\s*/i;
  const articleLines=(faqAt<0?lines:lines.slice(0,faqAt)).filter(x=>x.trim()!==`# ${title}`&&!metadata.test(x)),body=articleLines.join("\n").trim(),text=plain(body),paras=body.split(/\n\s*\n/).map(plain).filter(x=>x.length>50);
  const found:FAQ[]=[];let question="",answer:string[]=[];const flush=()=>{if(question&&answer.length)found.push({question:question.replace(/^Q(?:uestion)?\s*[:.)-]?\s*/i,"").replace(/^#{1,4}\s*/,""),answer:plain(answer.join(" ").replace(/^A(?:nswer)?\s*[:.)-]?\s*/i,""))});question="";answer=[]};
  for(const line of faqAt<0?[]:lines.slice(faqAt+1)){const s=line.trim(),isQuestion=/^#{1,4}\s+/.test(s)||/^Q(?:uestion)?\s*[:.)-]/i.test(s)||s.endsWith("?");if(isQuestion){flush();question=s}else if(s)answer.push(s)}flush();
