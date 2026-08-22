@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Vehicle Manager expiry reminders daily
+
+[Timer]
+OnCalendar=*-*-* 08:00:00 Asia/Kolkata
+Persistent=true
+RandomizedDelaySec=300
+Unit=vijayjha-reminders.service
+
+[Install]
+WantedBy=timers.target

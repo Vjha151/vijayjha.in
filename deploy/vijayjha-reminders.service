@@ -1,23 +1,17 @@
 [Unit]
-Description=VijayJha.in Node application
-After=network.target
+Description=VijayJha Vehicle Manager expiry reminders
+After=network-online.target vijayjha.service
 
 [Service]
-Type=simple
+Type=oneshot
 User=www-data
 Group=www-data
 WorkingDirectory=/var/www/vijayjha
 Environment=NODE_ENV=production
-Environment=PORT=3000
 Environment=TZ=Asia/Kolkata
 EnvironmentFile=/etc/vijayjha.env
-ExecStart=/usr/bin/node server.mjs
-Restart=on-failure
-RestartSec=5
+ExecStart=/usr/bin/npm run reminders
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=full
 ReadWritePaths=/var/www/vijayjha/data
-
-[Install]
-WantedBy=multi-user.target
