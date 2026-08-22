@@ -45,9 +45,15 @@ test("managed viewer is restricted to selected vehicles and lifecycle actions",a
   const location=await call(vehicles,"POST","/api/private/vehicles/locations",{name:"Punjab"},ownerCookie);
   assert.equal(location.status,201);
 
-  const createVehicle=number=>call(vehicles,"POST","/api/private/vehicles",{vehicle_number:number,type:"Bike",location_id:location.body.id},ownerCookie);
-  const first=await createVehicle("PB65BN2327"),second=await createVehicle("PB70M6681"),hidden=await createVehicle("PB00HIDDEN");
+  const createVehicle=(number,extra={})=>call(vehicles,"POST","/api/private/vehicles",{vehicle_number:number,type:"Bike",location_id:location.body.id,...extra},ownerCookie);
+  const first=await createVehicle("PB65BN2327",{chassis_number:"MA3TESTCHASSIS001",engine_number:"K15TESTENGINE001"}),second=await createVehicle("PB70M6681"),hidden=await createVehicle("PB00HIDDEN");
   assert.equal(first.status,201);assert.equal(second.status,201);assert.equal(hidden.status,201);
+  const firstDetail=await call(vehicles,"GET",`/api/private/vehicles/${first.body.id}`,undefined,ownerCookie);
+  assert.equal(firstDetail.body.vehicle.chassis_number,"MA3TESTCHASSIS001");assert.equal(firstDetail.body.vehicle.engine_number,"K15TESTENGINE001");
+  const updatedIdentity=await call(vehicles,"PUT",`/api/private/vehicles/${first.body.id}`,{vehicle_number:"PB65BN2327",type:"Bike",location_id:location.body.id,chassis_number:"MA3TESTCHASSIS002",engine_number:"K15TESTENGINE002"},ownerCookie);
+  assert.equal(updatedIdentity.status,200);
+  const updatedDetail=await call(vehicles,"GET",`/api/private/vehicles/${first.body.id}`,undefined,ownerCookie);
+  assert.equal(updatedDetail.body.vehicle.chassis_number,"MA3TESTCHASSIS002");assert.equal(updatedDetail.body.vehicle.engine_number,"K15TESTENGINE002");
 
   const created=await call(vehicles,"POST","/api/private/vehicles/sharing/users",{name:"Raj Driver",email:"raj.driver@example.test",mobile:"9999999999",password:"Temporary!123",permission:"view",scope:"selected",locationId:location.body.id,vehicleIds:[first.body.id,second.body.id]},ownerCookie);
   assert.equal(created.status,201);

@@ -16,7 +16,7 @@ export function VehicleSidebar({name,active="vehicles",accountKind="customer"}:{
  return <>
   <button className="vm-menu-toggle" onClick={()=>setOpen(value=>!value)} aria-label="Toggle navigation"><Menu/></button>
   <aside className={`vm-sidebar ${open?"open":""}`}>
-   <div className="vm-sidebar-brand"><span><Car/></span><div><b>Vehicle Manager</b><small>{name?.split(" ")[0].toUpperCase()||"VIJAY"}</small></div></div>
+   <div className="vm-sidebar-brand"><span><img src="/pwa/icon-192.png" alt="" aria-hidden="true"/></span><div><b>GaadiFile</b><small>{name?.split(" ")[0].toUpperCase()||"VIJAY"}</small></div></div>
    <nav>{links.filter(([,label])=>accountKind!=="managed"||!["Locations","Sharing & Users","Reports"].includes(label)).map(([Icon,label,href,key])=><a className={active===key?"active":""} href={href} key={label} onClick={()=>setOpen(false)}><Icon/>{label}</a>)}</nav>
    <a className="vm-sidebar-logout" href="/api/logout"><LogOut/> Sign out</a>
   </aside>

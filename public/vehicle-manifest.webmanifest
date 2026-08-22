@@ -1,8 +1,8 @@
 {
   "id": "/vehicles",
-  "name": "JHA Vehicles",
-  "short_name": "JHA Vehicles",
-  "description": "Securely manage your vehicles, documents and expiry reminders.",
+  "name": "GaadiFile",
+  "short_name": "GaadiFile",
+  "description": "GaadiFile securely manages your vehicles, documents and expiry reminders.",
   "start_url": "/vehicles",
   "scope": "/vehicles",
   "display": "standalone",

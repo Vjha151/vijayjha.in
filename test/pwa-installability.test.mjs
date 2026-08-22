@@ -6,10 +6,10 @@ import test from "node:test";
 const root=process.cwd();
 const fromRoot=(...parts)=>path.join(root,...parts);
 
-test("JHA Vehicles manifest meets installability requirements",async()=>{
+test("GaadiFile manifest meets installability requirements",async()=>{
  const manifest=JSON.parse(await readFile(fromRoot("public","vehicle-manifest.webmanifest"),"utf8"));
- assert.equal(manifest.name,"JHA Vehicles");
- assert.equal(manifest.short_name,"JHA Vehicles");
+ assert.equal(manifest.name,"GaadiFile");
+ assert.equal(manifest.short_name,"GaadiFile");
  assert.equal(manifest.start_url,"/vehicles");
  assert.equal(manifest.scope,"/vehicles");
  assert.equal(manifest.display,"standalone");
@@ -38,10 +38,16 @@ test("service worker is portal-scoped and never caches private APIs",async()=>{
  const setup=await readFile(fromRoot("src","vehicle-pwa.ts"),"utf8");
  assert.match(setup,/scope:"\/vehicles"/);
  assert.match(setup,/vehicle-manifest\.webmanifest/);
+ assert.match(setup,/document\.title="GaadiFile"/);
+ assert.match(setup,/\/pwa\/icon-180\.png/);
+ assert.match(setup,/gaadifileIcon/);
+ const offline=await readFile(fromRoot("public","vehicle-offline.html"),"utf8");
+ assert.match(offline,/GaadiFile is offline/);
+ assert.match(offline,/\/pwa\/icon-192\.png/);
 });
 
 test("production build contains all installable PWA assets",async()=>{
- for(const relative of["vehicle-manifest.webmanifest","vehicle-sw.js","vehicle-offline.html","pwa/icon-192.png","pwa/icon-512.png","pwa/maskable-512.png"]){
+ for(const relative of["gaadifile-logo.png","vehicle-manifest.webmanifest","vehicle-sw.js","vehicle-offline.html","pwa/icon-180.png","pwa/icon-192.png","pwa/icon-512.png","pwa/maskable-512.png"]){
   assert.ok((await stat(fromRoot("dist",...relative.split("/")))).size>0,relative);
  }
 });

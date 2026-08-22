@@ -1,4 +1,4 @@
-const CACHE="jha-vehicles-shell-v1";
+const CACHE="gaadifile-shell-v2";
 const SHELL="/vehicles";
 const OFFLINE="/vehicle-offline.html";
 const PRECACHE=[SHELL,OFFLINE,"/vehicle-manifest.webmanifest","/pwa/icon-192.png","/pwa/icon-512.png","/pwa/maskable-512.png"];
@@ -8,7 +8,7 @@ self.addEventListener("install",event=>{
 });
 
 self.addEventListener("activate",event=>{
- event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith("jha-vehicles-")&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
+ event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>(key.startsWith("jha-vehicles-")||key.startsWith("gaadifile-"))&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
 });
 
 self.addEventListener("fetch",event=>{

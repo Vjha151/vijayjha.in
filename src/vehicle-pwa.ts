@@ -17,18 +17,21 @@ function meta(name:string,content:string){
 export function setupVehiclePwa(){
  const portal=location.pathname==="/login"||location.pathname==="/vehicles"||location.pathname.startsWith("/vehicles/");
  if(!portal)return;
- document.title="JHA Vehicles";
+ document.title="GaadiFile";
  meta("theme-color","#102a3d");
- meta("description","Securely manage your vehicles, documents and expiry reminders.");
- meta("application-name","JHA Vehicles");
+ meta("description","GaadiFile securely manages your vehicles, documents and expiry reminders.");
+ meta("application-name","GaadiFile");
  meta("apple-mobile-web-app-capable","yes");
  meta("apple-mobile-web-app-status-bar-style","black-translucent");
- meta("apple-mobile-web-app-title","JHA Vehicles");
+ meta("apple-mobile-web-app-title","GaadiFile");
  if(!document.head.querySelector('link[rel="manifest"]')){
   const manifest=document.createElement("link");manifest.rel="manifest";manifest.href="/vehicle-manifest.webmanifest";document.head.append(manifest);
  }
  if(!document.head.querySelector('link[rel="apple-touch-icon"]')){
   const icon=document.createElement("link");icon.rel="apple-touch-icon";icon.href="/pwa/icon-180.png";document.head.append(icon);
+ }
+ if(!document.head.querySelector('link[data-gaadifile-icon]')){
+  const icon=document.createElement("link");icon.rel="icon";icon.type="image/png";icon.href="/pwa/icon-192.png";icon.dataset.gaadifileIcon="true";document.head.append(icon);
  }
  window.addEventListener("beforeinstallprompt",event=>{event.preventDefault();installPrompt=event as InstallPromptEvent;notify()});
  window.addEventListener("appinstalled",()=>{installed=true;installPrompt=null;notify()});
