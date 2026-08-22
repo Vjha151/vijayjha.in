@@ -7,7 +7,7 @@ const clean=(value="",limit=5000)=>String(value??"").replace(/[<>]/g,"").trim().
 const positive=(value,fallback,max=100)=>{const number=Number.parseInt(value,10);return Number.isFinite(number)&&number>0?Math.min(number,max):fallback};
 const indiaDate=()=>{const parts=Object.fromEntries(new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Kolkata",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date()).filter(part=>part.type!=="literal").map(part=>[part.type,part.value]));return`${parts.year}-${parts.month}-${parts.day}`};
 const expiryStatus=(expiry,today=indiaDate())=>{if(!expiry)return"No Expiry";const days=Math.round((Date.parse(`${expiry}T00:00:00Z`)-Date.parse(`${today}T00:00:00Z`))/864e5);return days<0?"Expired":days<=10?"Expiring Soon":"Valid"};
-const customerSql="u.role='user' AND COALESCE(u.account_kind,'customer')='customer'";
+const customerSql="COALESCE(u.account_kind,'customer')='customer'";
 
 export function createVehicleAdminApi({db,root,currentUser,admin,json}){
  const store=path.join(root,"data","private-vehicle-documents");
