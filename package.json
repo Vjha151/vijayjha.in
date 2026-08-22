@@ -12,6 +12,9 @@
     "start": "NODE_ENV=production node --env-file-if-exists=.env server.mjs",
     "start:win": "$env:NODE_ENV='production'; node server.mjs",
     "reminders": "node --env-file-if-exists=.env vehicle-reminders.mjs",
+    "smtp:verify": "node --env-file-if-exists=.env smtp-verify.mjs",
+    "smtp:test-reminder": "node --env-file-if-exists=.env smtp-test-reminder.mjs",
+    "test": "node --test",
     "backup:vehicles": "node --env-file-if-exists=.env backup-vehicles.mjs"
   },
   "dependencies": {
@@ -26,6 +29,7 @@
     "lucide-react": "^1.31.0",
     "nodemailer": "^9.0.5",
     "react": "19.2.6",
+    "react-advanced-cropper": "0.20.1",
     "react-dom": "19.2.6",
     "three": "^0.185.1",
     "typescript": "^7.0.2",

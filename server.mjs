@@ -9,6 +9,8 @@ import { createServer as createViteServer } from "vite";
 import { createVehicleApi } from "./vehicle-api.mjs";
 import { createAuth } from "./auth-api.mjs";
 import { createVehicleSharing } from "./vehicle-sharing.mjs";
+import { createVehicleAdminApi } from "./vehicle-admin-api.mjs";
+import { startVehicleReminderScheduler } from "./vehicle-reminder-scheduler.mjs";
 
 const root=process.cwd(), dataDir=path.join(root,"data"), uploadDir=path.join(dataDir,"uploads");
 await mkdir(uploadDir,{recursive:true});
@@ -38,8 +40,10 @@ async function syncInstagram(count){const token=process.env.INSTAGRAM_ACCESS_TOK
 const auth=await createAuth({db,json});
 const vehicleSharing=createVehicleSharing({db,currentUser:auth.currentUser,json,managed:auth.managed});
 const vehicleApi=await createVehicleApi({db,root,authed:auth.authed,currentUser:auth.currentUser,ownerUserId:auth.ownerUserId,json,sharing:vehicleSharing});
+const vehicleAdminApi=createVehicleAdminApi({db,root,currentUser:auth.currentUser,admin:auth.admin,json});
 async function api(req,res,url){
  const authResponse=await auth.api(req,res,url);if(authResponse!==false)return authResponse;
+ const vehicleAdminResponse=await vehicleAdminApi(req,res,url);if(vehicleAdminResponse!==false)return vehicleAdminResponse;
  if(url.pathname.startsWith("/api/private/vehicles"))return vehicleApi(req,res,url);
  if(url.pathname==="/api/content"&&req.method==="GET"){const ig=instagramSettings();return json(res,200,{settings:settings(),posts:db.prepare("SELECT * FROM posts WHERE published=1 AND (publish_date='' OR datetime(publish_date)<=datetime('now','localtime')) ORDER BY COALESCE(NULLIF(publish_date,''),created_at) DESC").all(),instagram:{...ig,posts:ig.enabled?cachedInstagramPosts(ig.count):[]}})}
  const publicPost=url.pathname.match(/^\/api\/posts\/([a-z0-9-]+)$/);if(publicPost&&req.method==="GET"){const post=db.prepare("SELECT * FROM posts WHERE slug=? AND published=1 AND (publish_date='' OR datetime(publish_date)<=datetime('now','localtime'))").get(publicPost[1]);return post?json(res,200,{post}):json(res,404,{error:"Post not found"})}
@@ -58,5 +62,5 @@ async function api(req,res,url){
 
 const prod=process.env.NODE_ENV==="production";const vite=prod?null:await createViteServer({server:{middlewareMode:true},appType:"spa"});
 const mime={".js":"text/javascript",".css":"text/css",".html":"text/html",".json":"application/json",".webmanifest":"application/manifest+json",".png":"image/png",".jpg":"image/jpeg",".jpeg":"image/jpeg",".webp":"image/webp",".svg":"image/svg+xml"};
-const server=http.createServer(async(req,res)=>{try{const url=new URL(req.url,"http://localhost");if(url.pathname==="/private/vehicles"||url.pathname.startsWith("/private/vehicles/")){res.writeHead(308,{Location:`/vehicles${url.pathname.slice("/private/vehicles".length)}${url.search}`,"Cache-Control":"no-store"});return res.end()}if(url.pathname.startsWith("/api/")){if(await api(req,res,url)!==false)return}if(url.pathname.startsWith("/uploads/")){const p=path.join(uploadDir,path.basename(url.pathname));if(!existsSync(p)){res.writeHead(404);return res.end()}res.writeHead(200,{"Content-Type":mime[path.extname(p)]||"application/octet-stream","Cache-Control":"public,max-age=31536000,immutable"});return createReadStream(p).pipe(res)}if(vite)return vite.middlewares(req,res,()=>{});let file=url.pathname.includes(".")?path.join(root,"dist",url.pathname):path.join(root,"dist","index.html");if(!existsSync(file))file=path.join(root,"dist","index.html");res.writeHead(200,{"Content-Type":mime[path.extname(file)]||"text/html"});createReadStream(file).pipe(res)}catch(e){console.error(e);if(!res.headersSent)json(res,500,{error:"Server error"})}});
-const port=Number(process.env.PORT||3000);server.listen(port,"0.0.0.0",()=>console.log(`VijayJha.in running at http://localhost:${port}`));
+const server=http.createServer(async(req,res)=>{try{const url=new URL(req.url,"http://localhost");if(url.pathname==="/private/vehicles"||url.pathname.startsWith("/private/vehicles/")){res.writeHead(308,{Location:`/vehicles${url.pathname.slice("/private/vehicles".length)}${url.search}`,"Cache-Control":"no-store"});return res.end()}if(url.pathname==="/admin/vehicle-users"){res.writeHead(308,{Location:`/admin/vehicle-portal${url.search}`,"Cache-Control":"no-store"});return res.end()}if(url.pathname.startsWith("/api/")){if(await api(req,res,url)!==false)return}if(url.pathname.startsWith("/uploads/")){const p=path.join(uploadDir,path.basename(url.pathname));if(!existsSync(p)){res.writeHead(404);return res.end()}res.writeHead(200,{"Content-Type":mime[path.extname(p)]||"application/octet-stream","Cache-Control":"public,max-age=31536000,immutable"});return createReadStream(p).pipe(res)}if(vite)return vite.middlewares(req,res,()=>{});let file=url.pathname.includes(".")?path.join(root,"dist",url.pathname):path.join(root,"dist","index.html");if(!existsSync(file))file=path.join(root,"dist","index.html");res.writeHead(200,{"Content-Type":mime[path.extname(file)]||"text/html"});createReadStream(file).pipe(res)}catch(e){console.error(e);if(!res.headersSent)json(res,500,{error:"Server error"})}});
+const port=Number(process.env.PORT||3000);server.listen(port,"0.0.0.0",()=>{console.log(`VijayJha.in running at http://localhost:${port}`);if(prod)startVehicleReminderScheduler({root})});

@@ -85,14 +85,47 @@ On first startup, the admin account is created from `ADMIN_EMAIL` and
 `APP_BASE_URL` and the `SMTP_*` variables in `.env.example` for password-reset
 and reminder delivery.
 
+### GaadiFile Gmail reminders
+
+Create a Google App Password for `gaadifile@gmail.com` (2-Step Verification
+must be enabled), then add the following as Coolify application environment
+variables. Never commit the App Password.
+
+```dotenv
+APP_BASE_URL=https://vijayjha.in
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USER=gaadifile@gmail.com
+SMTP_PASSWORD=YOUR_16_CHARACTER_GOOGLE_APP_PASSWORD
+MAIL_FROM=gaadifile@gmail.com
+MAIL_FROM_NAME=GaadiFile
+VEHICLE_REMINDERS_ENABLED=true
+```
+
+Verify the credentials without sending an email with `npm run smtp:verify`.
+Set `SMTP_TEST_TO` and run `npm run smtp:test-reminder` to send one clearly
+labelled test reminder; it does not read or alter production reminder rows.
+The production Node process starts a container-native scheduler. It runs daily
+at 08:00 Asia/Kolkata and sends idempotent email reminders 10, 5 and 1 day
+before expiry and on the expiry date. It covers the current uploaded document
+plus First Party, Third Party, PUC and temporary registration expiry metadata.
+Delivery status, attempts, Gmail message ID and a sanitized failure reason are
+stored in SQLite. The scheduler restarts with the application container and
+performs a same-day catch-up when a restart occurs after 08:00. The SQLite
+delivery ledger remains the authority that prevents duplicate messages.
+
 ```bash
-sudo cp deploy/vijayjha-reminders.service deploy/vijayjha-reminders.timer /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable --now vijayjha-reminders.timer
 npm run backup:vehicles
 ```
 
+Coolify must mount persistent storage at `/app/data`; this preserves SQLite,
+the reminder ledger and private vehicle documents across deployments. The old
+`deploy/vijayjha-reminders.service` and `.timer` files are legacy VPS examples
+only and are not used by the Coolify deployment. See `deploy/COOLIFY.md`.
+
 Backups contain a consistent SQLite snapshot, private documents, and a
-manifest. To restore, stop `vijayjha`, copy the chosen backup's `site.db` and
-`private-vehicle-documents/` into `/var/www/vijayjha/data/`, set ownership to
-`www-data:www-data`, and start the service. Keep backups outside the app tree.
+manifest. For Coolify restore, stop the application and restore `site.db` plus
+`private-vehicle-documents/` together into the persistent volume mounted at
+`/app/data`, then start the application. Keep a second backup outside the
+application volume.
