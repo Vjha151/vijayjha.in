@@ -1,0 +1,54 @@
+{
+  "id": "/vehicles",
+  "name": "JHA Vehicles",
+  "short_name": "JHA Vehicles",
+  "description": "Securely manage your vehicles, documents and expiry reminders.",
+  "start_url": "/vehicles",
+  "scope": "/vehicles",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#f6f8f7",
+  "theme_color": "#102a3d",
+  "orientation": "any",
+  "categories": ["business", "utilities", "productivity"],
+  "icons": [
+    {
+      "src": "/pwa/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Vehicles",
+      "short_name": "Vehicles",
+      "url": "/vehicles",
+      "icons": [{"src": "/pwa/icon-192.png", "sizes": "192x192", "type": "image/png"}]
+    },
+    {
+      "name": "Documents",
+      "short_name": "Documents",
+      "url": "/vehicles#documents",
+      "icons": [{"src": "/pwa/icon-192.png", "sizes": "192x192", "type": "image/png"}]
+    },
+    {
+      "name": "Reminders",
+      "short_name": "Reminders",
+      "url": "/vehicles#reminders",
+      "icons": [{"src": "/pwa/icon-192.png", "sizes": "192x192", "type": "image/png"}]
+    }
+  ]
+}

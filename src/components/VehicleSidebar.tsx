@@ -4,14 +4,14 @@ import {BarChart3,Bell,Car,FileText,LayoutDashboard,LogOut,MapPin,Menu,Settings,
 export function VehicleSidebar({name,active="vehicles",accountKind="customer"}:{name?:string;active?:string;accountKind?:string}){
  const[open,setOpen]=useState(false);
  const links=[
-  [LayoutDashboard,"Dashboard","/private/vehicles#dashboard","dashboard"],
-  [Car,"Vehicles","/private/vehicles","vehicles"],
-  [Bell,"Reminders","/private/vehicles#reminders","reminders"],
-  [FileText,"Documents","/private/vehicles#documents","documents"],
-  [MapPin,"Locations","/private/vehicles/account#locations","locations"],
-  [Users,"Sharing & Users","/private/vehicles/account#sharing","sharing"],
+  [LayoutDashboard,"Dashboard","/vehicles#dashboard","dashboard"],
+  [Car,"Vehicles","/vehicles","vehicles"],
+  [Bell,"Reminders","/vehicles#reminders","reminders"],
+  [FileText,"Documents","/vehicles#documents","documents"],
+  [MapPin,"Locations","/vehicles/account#locations","locations"],
+  [Users,"Sharing & Users","/vehicles/account#sharing","sharing"],
   [BarChart3,"Reports","/api/private/vehicles/export?format=xlsx","reports"],
-  [Settings,"Settings","/private/vehicles/account","settings"]
+  [Settings,"Settings","/vehicles/account","settings"]
  ] as const;
  return <>
   <button className="vm-menu-toggle" onClick={()=>setOpen(value=>!value)} aria-label="Toggle navigation"><Menu/></button>
