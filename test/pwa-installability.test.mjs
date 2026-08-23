@@ -36,8 +36,11 @@ test("service worker is portal-scoped and never caches private APIs",async()=>{
  assert.match(worker,/SHELL="\/cars"/);
  assert.match(worker,/pathname\.startsWith\("\/api\/"\)/);
  assert.match(worker,/request\.method!=="GET"/);
+ assert.match(worker,/CACHE="gaadifile-shell-v4"/);
  const setup=await readFile(fromRoot("src","vehicle-pwa.ts"),"utf8");
  assert.match(setup,/scope:"\/cars"/);
+ assert.match(setup,/vehicle-sw\.js\?v=4/);
+ assert.match(setup,/controllerchange/);
  assert.match(setup,/vehicle-manifest\.webmanifest/);
  assert.match(setup,/document\.title="GaadiFile"/);
  assert.match(setup,/\/pwa\/icon-180\.png/);

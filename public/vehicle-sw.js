@@ -1,4 +1,4 @@
-const CACHE="gaadifile-shell-v3";
+const CACHE="gaadifile-shell-v4";
 const SHELL="/cars";
 const OFFLINE="/vehicle-offline.html";
 const PRECACHE=[SHELL,OFFLINE,"/vehicle-manifest.webmanifest","/pwa/icon-192.png","/pwa/icon-512.png","/pwa/maskable-512.png"];

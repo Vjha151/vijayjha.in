@@ -35,7 +35,7 @@ export function setupVehiclePwa(){
  }
  window.addEventListener("beforeinstallprompt",event=>{event.preventDefault();installPrompt=event as InstallPromptEvent;notify()});
  window.addEventListener("appinstalled",()=>{installed=true;installPrompt=null;notify()});
- if(import.meta.env.PROD&&"serviceWorker" in navigator)window.addEventListener("load",()=>{navigator.serviceWorker.register("/vehicle-sw.js",{scope:"/cars"}).then(registration=>registration.update()).catch(()=>{})},{once:true});
+ if(import.meta.env.PROD&&"serviceWorker" in navigator){let reloading=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(reloading)return;reloading=true;location.reload()});window.addEventListener("load",()=>{navigator.serviceWorker.register("/vehicle-sw.js?v=4",{scope:"/cars"}).then(registration=>registration.update()).catch(()=>{})},{once:true})}
 }
 
 export function vehicleInstallState(){return{canInstall:!!installPrompt&&!installed,installed}}
