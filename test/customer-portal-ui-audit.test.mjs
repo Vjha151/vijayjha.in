@@ -20,6 +20,21 @@ test("every customer portal entry and deep-link stays under /cars", () => {
   assert.ok(manager.includes('match(/^\\/cars\\/(\\d+)$/)'), "missing /cars/:vehicleId deep-link handling");
 });
 
+test("dashboard document status cards open their matching filtered lists", () => {
+  assert.match(manager, /"Valid documents",stats\.validDocuments,"#valid-documents"/);
+  assert.match(manager, /"No expiry",stats\.noExpiryDocuments,"#no-expiry"/);
+  assert.match(manager, /statusFilter=view==="valid-documents"\?"&status=Valid"/);
+  assert.match(manager, /view==="no-expiry"\?"&status=No%20Expiry"/);
+});
+
+test("dashboard exposes a clickable incomplete-vehicle count with pending details", () => {
+  assert.match(manager, /"Incomplete vehicles",stats\.incompleteVehicles,"#incomplete"/);
+  assert.match(manager, /function IncompleteVehicles\(\)/);
+  assert.match(manager, /\/api\/private\/vehicles\/incomplete/);
+  assert.match(manager, /item\.missing\.map/);
+  assert.match(styles, /\.vm-incomplete-list>article/);
+});
+
 test("all customer pages retain their responsive layout coverage", () => {
   for (const selector of [
     ".vm-with-sidebar .vm-table-wrap",

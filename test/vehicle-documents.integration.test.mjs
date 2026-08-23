@@ -40,8 +40,12 @@ test("private document upload accepts real PDFs from generic-MIME providers and 
   const auth=await createAuth({db,json}),sharing=createVehicleSharing({db,currentUser:auth.currentUser,json,managed:auth.managed}),vehicles=await createVehicleApi({db,root,authed:auth.authed,currentUser:auth.currentUser,ownerUserId:null,json,sharing});
   const register=await jsonCall(auth.api,"POST","/api/auth/register",{name:"PDF Owner",email:"pdf.owner@example.test",password:"OwnerPassword!123"}),ownerCookie=String(register.headers["Set-Cookie"]).split(";")[0];
   const location=await jsonCall(vehicles,"POST","/api/private/vehicles/locations",{name:"PDF Garage"},ownerCookie);
-  const created=await jsonCall(vehicles,"POST","/api/private/vehicles",{vehicle_number:"PDFTEST1",location_id:location.body.id},ownerCookie),vehicleId=created.body.id;
+  const created=await jsonCall(vehicles,"POST","/api/private/vehicles",{vehicle_number:"PDFTEST1",fuel_type:"Diesel",purchase_date:"2020-02-29",location_id:location.body.id},ownerCookie),vehicleId=created.body.id;
   assert.equal(created.status,201);
+  const incomplete=await jsonCall(vehicles,"GET","/api/private/vehicles/incomplete?page=1&pageSize=20",undefined,ownerCookie),initialDashboard=await jsonCall(vehicles,"GET","/api/private/vehicles/dashboard",undefined,ownerCookie);
+  assert.equal(incomplete.status,200);assert.equal(incomplete.body.total,1);assert.equal(initialDashboard.body.incompleteVehicles,1);
+  assert.ok(incomplete.body.items[0].missing.includes("Car Owner Name"));assert.ok(incomplete.body.items[0].missing.includes("First Party Insurance Document"));assert.ok(incomplete.body.items[0].missing.includes("RC Document"));assert.ok(incomplete.body.items[0].missing.includes("PUC Document"));assert.ok(!incomplete.body.items[0].missing.includes("Current KM"));assert.ok(!incomplete.body.items[0].missing.includes("Fuel Type"));
+  const createdProfile=await jsonCall(vehicles,"GET",`/api/private/vehicles/${vehicleId}`,undefined,ownerCookie);assert.equal(createdProfile.body.vehicle.fuel_type,"Diesel");assert.equal(createdProfile.body.vehicle.purchase_date,"2020-02-29");
 
   const smallPdf=pdfOfSize(2048),smallUpload=await multipartCall(vehicles,`/api/private/vehicles/${vehicleId}/documents`,{bytes:smallPdf,name:"RC Document.PDF",type:"application/octet-stream",fields:{name:"RC",category:"RC"}},ownerCookie);
   assert.equal(smallUpload.status,201);
@@ -52,8 +56,11 @@ test("private document upload accepts real PDFs from generic-MIME providers and 
   assert.equal(view.status,200);assert.equal(view.headers["Content-Type"],"application/pdf");assert.match(view.headers["Content-Disposition"],/^inline/);assert.deepEqual(view.buffer,smallPdf);
   assert.equal(download.status,200);assert.match(download.headers["Content-Disposition"],/^attachment/);assert.deepEqual(download.buffer,smallPdf);
 
-  const nearLimit=pdfOfSize(MAX_FILE),nearUpload=await multipartCall(vehicles,`/api/private/vehicles/${vehicleId}/documents`,{bytes:nearLimit,name:"insurance.pdf",type:"application/pdf",fields:{name:"Insurance",category:"First Party / Own Damage Insurance"}},ownerCookie);
+  const nearLimit=pdfOfSize(MAX_FILE),nearUpload=await multipartCall(vehicles,`/api/private/vehicles/${vehicleId}/documents`,{bytes:nearLimit,name:"insurance.pdf",type:"application/pdf",fields:{name:"Insurance",category:"First Party / Own Damage Insurance",expiry_date:"2999-01-01"}},ownerCookie);
   assert.equal(nearUpload.status,201);assert.equal(db.prepare("SELECT file_size FROM document_versions WHERE document_id=?").get(nearUpload.body.id).file_size,MAX_FILE);
+  const noExpiry=await jsonCall(vehicles,"GET","/api/private/vehicles/documents?page=1&pageSize=20&status=No%20Expiry",undefined,ownerCookie),valid=await jsonCall(vehicles,"GET","/api/private/vehicles/documents?page=1&pageSize=20&status=Valid",undefined,ownerCookie),dashboard=await jsonCall(vehicles,"GET","/api/private/vehicles/dashboard",undefined,ownerCookie);
+  assert.equal(noExpiry.status,200);assert.equal(noExpiry.body.total,dashboard.body.noExpiryDocuments);assert.ok(noExpiry.body.items.some(item=>item.id===documentId&&item.status==="No Expiry"));
+  assert.equal(valid.status,200);assert.equal(valid.body.total,dashboard.body.validDocuments);assert.ok(valid.body.items.some(item=>item.id===nearUpload.body.id&&item.status==="Valid"));
   const filesBeforeRejected=(await readdir(store)).length;
 
   const oversized=await multipartCall(vehicles,`/api/private/vehicles/${vehicleId}/documents`,{bytes:pdfOfSize(MAX_FILE+1),name:"too-large.pdf",type:"application/pdf",fields:{name:"Too large",category:"Other"}},ownerCookie);
