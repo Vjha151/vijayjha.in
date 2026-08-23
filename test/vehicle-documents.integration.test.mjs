@@ -84,6 +84,11 @@ test("private document upload accepts real PDFs from generic-MIME providers and 
 
   const replacement=pdfOfSize(3072),replaced=await multipartCall(vehicles,`/api/private/vehicles/${vehicleId}/documents/${documentId}/replace`,{bytes:replacement,name:"RC replacement.pdf",type:"application/x-pdf"},ownerCookie);
   assert.equal(replaced.status,200);assert.equal(db.prepare("SELECT COUNT(*) total FROM document_versions WHERE document_id=?").get(documentId).total,2);assert.equal(db.prepare("SELECT COUNT(*) total FROM document_versions WHERE document_id=? AND is_active=1").get(documentId).total,1);
+  const replacedRc=db.prepare("SELECT issue_date,expiry_date FROM vehicle_documents WHERE id=?").get(documentId);assert.equal(replacedRc.issue_date,"2020-02-29");assert.equal(replacedRc.expiry_date,"2035-02-28");
+  const noExpiryAfterReplace=await jsonCall(vehicles,"GET","/api/private/vehicles/documents?page=1&pageSize=20&status=No%20Expiry",undefined,ownerCookie);assert.ok(!noExpiryAfterReplace.body.items.some(item=>item.id===documentId));
+  db.prepare("UPDATE vehicle_documents SET issue_date=NULL,expiry_date=NULL WHERE id=?").run(documentId);
+  await createVehicleApi({db,root,authed:auth.authed,currentUser:auth.currentUser,ownerUserId:null,json,sharing});
+  const backfilledRc=db.prepare("SELECT issue_date,expiry_date FROM vehicle_documents WHERE id=?").get(documentId);assert.equal(backfilledRc.issue_date,"2020-02-29");assert.equal(backfilledRc.expiry_date,"2035-02-28");
 
   assert.equal((await jsonCall(vehicles,"GET",`/api/private/vehicles/${vehicleId}/documents/${documentId}/view`)).status,401);
   const viewerCreated=await jsonCall(vehicles,"POST","/api/private/vehicles/sharing/users",{name:"PDF Viewer",email:"pdf.viewer@example.test",password:"ViewerPassword!123",permission:"view",scope:"location",locationId:location.body.id,vehicleIds:[]},ownerCookie);
