@@ -68,7 +68,7 @@ export function documentDefaults(vehicle:any,category:string){
  if(category==="First Party / Own Damage Insurance")return{documentNumber:vehicle?.first_party_policy_number||"",issueDate:vehicle?.first_party_start_date||"",expiryDate:vehicle?.first_party_expiry_date||""};
  if(category==="Third Party Insurance")return{documentNumber:vehicle?.third_party_policy_number||"",issueDate:vehicle?.third_party_start_date||"",expiryDate:vehicle?.third_party_expiry_date||""};
  if(category==="PUC")return{documentNumber:vehicle?.puc_number||"",issueDate:vehicle?.puc_issue_date||"",expiryDate:vehicle?.puc_expiry_date||""};
- if(category==="RC"){const issueDate=vehicle?.purchase_date||"",expiryDate=["Diesel","Petrol"].includes(vehicle?.fuel_type)&&issueDate?addYears(issueDate,15):vehicle?.registration_status==="Temporary"?vehicle?.temporary_registration_expiry||"":"";return{documentNumber:vehicle?.vehicle_number||"",issueDate,expiryDate}}
+ if(category==="RC"){const issueDate=vehicle?.purchase_date||"",expiryDate=issueDate?addYears(issueDate,15):vehicle?.registration_status==="Temporary"?vehicle?.temporary_registration_expiry||"":"";return{documentNumber:vehicle?.vehicle_number||"",issueDate,expiryDate}}
  return{documentNumber:"",issueDate:"",expiryDate:""};
 }
 
