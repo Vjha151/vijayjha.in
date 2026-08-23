@@ -21,7 +21,7 @@ Production runs as Nginx → Node.js on `127.0.0.1:3000`. Node serves the Vite
 build, SPA route fallbacks, admin API, uploads, and SQLite data.
 
 The authenticated private vehicle workspace is available at
-`/vehicles`. Legacy `/private/vehicles` page URLs redirect to the new route. Vehicle and dashboard APIs use
+`/cars`. Legacy `/private/vehicles` page URLs redirect to the customer route. Vehicle and dashboard APIs use
 `/api/private/vehicles/*`. Vehicle search and type filters are paginated on
 the server (20 rows per UI page); the database does not impose a maximum
 vehicle or per-vehicle document count. Private documents are stored under

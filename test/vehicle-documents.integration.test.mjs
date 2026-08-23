@@ -68,6 +68,12 @@ test("private document upload accepts real PDFs from generic-MIME providers and 
   const jpeg=await multipartCall(vehicles,`/api/private/vehicles/${vehicleId}/documents`,{bytes:Buffer.from([255,216,255,217]),name:"photo.jpg",type:"application/octet-stream",fields:{name:"Photo",category:"Other"}},ownerCookie);
   const png=await multipartCall(vehicles,`/api/private/vehicles/${vehicleId}/documents`,{bytes:Buffer.from([137,80,78,71,13,10,26,10,0]),name:"scan.png",type:"image/png",fields:{name:"Scan",category:"PUC"}},ownerCookie);
   assert.equal(jpeg.status,201);assert.equal(png.status,201);assert.equal(db.prepare("SELECT mime_type FROM document_versions WHERE document_id=?").get(jpeg.body.id).mime_type,"image/jpeg");assert.equal(db.prepare("SELECT mime_type FROM document_versions WHERE document_id=?").get(png.body.id).mime_type,"image/png");
+  const jpegView=await jsonCall(vehicles,"GET",`/api/private/vehicles/${vehicleId}/documents/${jpeg.body.id}/view`,undefined,ownerCookie);
+  const pngView=await jsonCall(vehicles,"GET",`/api/private/vehicles/${vehicleId}/documents/${png.body.id}/view`,undefined,ownerCookie);
+  const pdfHead=await invoke(vehicles,"HEAD",`/api/private/vehicles/${vehicleId}/documents/${documentId}/view`,Buffer.alloc(0),{cookie:ownerCookie});
+  assert.equal(jpegView.status,200);assert.equal(jpegView.headers["Content-Type"],"image/jpeg");assert.deepEqual(jpegView.buffer,Buffer.from([255,216,255,217]));
+  assert.equal(pngView.status,200);assert.equal(pngView.headers["Content-Type"],"image/png");assert.deepEqual(pngView.buffer,Buffer.from([137,80,78,71,13,10,26,10,0]));
+  assert.equal(pdfHead.status,200);assert.equal(pdfHead.headers["Content-Type"],"application/pdf");assert.equal(pdfHead.buffer.length,0);
 
   const replacement=pdfOfSize(3072),replaced=await multipartCall(vehicles,`/api/private/vehicles/${vehicleId}/documents/${documentId}/replace`,{bytes:replacement,name:"RC replacement.pdf",type:"application/x-pdf"},ownerCookie);
   assert.equal(replaced.status,200);assert.equal(db.prepare("SELECT COUNT(*) total FROM document_versions WHERE document_id=?").get(documentId).total,2);assert.equal(db.prepare("SELECT COUNT(*) total FROM document_versions WHERE document_id=? AND is_active=1").get(documentId).total,1);

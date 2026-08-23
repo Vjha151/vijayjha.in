@@ -15,7 +15,7 @@ function meta(name:string,content:string){
 }
 
 export function setupVehiclePwa(){
- const portal=location.pathname==="/login"||location.pathname==="/vehicles"||location.pathname.startsWith("/vehicles/");
+ const portal=location.pathname==="/login"||location.pathname==="/cars"||location.pathname.startsWith("/cars/");
  if(!portal)return;
  document.title="GaadiFile";
  meta("theme-color","#102a3d");
@@ -28,14 +28,14 @@ export function setupVehiclePwa(){
   const manifest=document.createElement("link");manifest.rel="manifest";manifest.href="/vehicle-manifest.webmanifest";document.head.append(manifest);
  }
  if(!document.head.querySelector('link[rel="apple-touch-icon"]')){
-  const icon=document.createElement("link");icon.rel="apple-touch-icon";icon.href="/pwa/icon-180.png";document.head.append(icon);
+  const icon=document.createElement("link");icon.rel="apple-touch-icon";icon.href="/pwa/icon-180.png?v=2";document.head.append(icon);
  }
  if(!document.head.querySelector('link[data-gaadifile-icon]')){
-  const icon=document.createElement("link");icon.rel="icon";icon.type="image/png";icon.href="/pwa/icon-192.png";icon.dataset.gaadifileIcon="true";document.head.append(icon);
+  const icon=document.createElement("link");icon.rel="icon";icon.type="image/png";icon.href="/pwa/icon-192.png?v=2";icon.dataset.gaadifileIcon="true";document.head.append(icon);
  }
  window.addEventListener("beforeinstallprompt",event=>{event.preventDefault();installPrompt=event as InstallPromptEvent;notify()});
  window.addEventListener("appinstalled",()=>{installed=true;installPrompt=null;notify()});
- if(import.meta.env.PROD&&"serviceWorker" in navigator)window.addEventListener("load",()=>{navigator.serviceWorker.register("/vehicle-sw.js",{scope:"/vehicles"}).then(registration=>registration.update()).catch(()=>{})},{once:true});
+ if(import.meta.env.PROD&&"serviceWorker" in navigator)window.addEventListener("load",()=>{navigator.serviceWorker.register("/vehicle-sw.js",{scope:"/cars"}).then(registration=>registration.update()).catch(()=>{})},{once:true});
 }
 
 export function vehicleInstallState(){return{canInstall:!!installPrompt&&!installed,installed}}

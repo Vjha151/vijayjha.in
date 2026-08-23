@@ -51,7 +51,7 @@ test("sends branded portal links and the delivery ledger prevents duplicates",as
  const first=await runVehicleReminders({db,transport,from:'"GaadiFile" <gaadifile@gmail.com>',today:"2026-08-22",baseUrl:"https://vijayjha.in",sendRetries:0});
  assert.deepEqual({due:first.due,sent:first.sent,failed:first.failed,skipped:first.skipped},{due:10,sent:10,failed:0,skipped:0});
  assert.equal(messages.length,10);
- assert.ok(messages.every(message=>message.html.includes("https://vijayjha.in/vehicles/")));
+ assert.ok(messages.every(message=>message.html.includes("https://vijayjha.in/cars/")));
  assert.ok(messages.every(message=>!message.html.includes("token=")&&!message.html.includes("/api/private/")));
  const second=await runVehicleReminders({db,transport,from:'"GaadiFile" <gaadifile@gmail.com>',today:"2026-08-22",baseUrl:"https://vijayjha.in",sendRetries:0});
  assert.deepEqual({sent:second.sent,skipped:second.skipped},{sent:0,skipped:10});

@@ -1,5 +1,5 @@
-const CACHE="gaadifile-shell-v2";
-const SHELL="/vehicles";
+const CACHE="gaadifile-shell-v3";
+const SHELL="/cars";
 const OFFLINE="/vehicle-offline.html";
 const PRECACHE=[SHELL,OFFLINE,"/vehicle-manifest.webmanifest","/pwa/icon-192.png","/pwa/icon-512.png","/pwa/maskable-512.png"];
 
@@ -18,7 +18,7 @@ self.addEventListener("fetch",event=>{
  if(url.origin!==self.location.origin)return;
  if(url.pathname.startsWith("/api/")||url.pathname.startsWith("/uploads/"))return;
 
- if(request.mode==="navigate"&&url.pathname.startsWith("/vehicles")){
+ if(request.mode==="navigate"&&url.pathname.startsWith("/cars")){
   event.respondWith(fetch(request).then(response=>{
    if(response.ok)caches.open(CACHE).then(cache=>cache.put(SHELL,response.clone()));
    return response;
