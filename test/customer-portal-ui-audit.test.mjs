@@ -35,6 +35,12 @@ test("dashboard exposes a clickable incomplete-vehicle count with pending detail
   assert.match(styles, /\.vm-incomplete-list>article/);
 });
 
+test("short mobile sidebars keep every navigation link reachable", () => {
+  assert.match(styles, /\.vm-sidebar\{[^}]*overflow-y:auto[^}]*overscroll-behavior:contain/);
+  assert.match(styles, /\.vm-sidebar nav\{display:grid;flex:none/);
+  assert.match(styles, /\.vm-sidebar-brand\{display:grid;flex:none/);
+});
+
 test("all customer pages retain their responsive layout coverage", () => {
   for (const selector of [
     ".vm-with-sidebar .vm-table-wrap",

@@ -169,21 +169,21 @@ html:has(.vm),html:has(.vm) body,.vm,.vm *,.vm-login,.vm-login *{cursor:default}
 /* Fleet-manager shell matching the supplied desktop reference */
 .vm-with-sidebar{padding-left:230px;background:#f5f8f6}
 .vm-with-sidebar>header{width:100%;box-sizing:border-box}
-.vm-sidebar{position:fixed;inset:0 auto 0 0;z-index:120;width:230px;box-sizing:border-box;display:flex;flex-direction:column;padding:12px 14px 18px;color:#fff;background:#142f42;box-shadow:8px 0 30px #0c233022}
-.vm-sidebar-brand{display:grid;justify-items:center;gap:7px;padding:0 8px 20px;text-align:center}
+.vm-sidebar{position:fixed;inset:0 auto 0 0;z-index:120;width:230px;box-sizing:border-box;display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;padding:12px 14px 18px;color:#fff;background:#142f42;box-shadow:8px 0 30px #0c233022}
+.vm-sidebar-brand{display:grid;flex:none;justify-items:center;gap:7px;padding:0 8px 20px;text-align:center}
 .vm-sidebar-brand>span{display:grid;width:42px;height:42px;overflow:hidden;place-items:center;border:1px solid #ffffff24;border-radius:10px;background:#fff}
 .vm-sidebar-brand img{width:154px;height:112px;object-fit:contain;border-radius:12px;background:#fff}
 .vm-sidebar-brand svg{width:25px}
 .vm-sidebar-brand b,.vm-sidebar-brand small{display:block}
 .vm-sidebar-brand b{font-size:17px;letter-spacing:-.01em}
 .vm-sidebar-brand small{color:#c5d3da;font-size:11.5px;text-transform:uppercase;letter-spacing:.08em}
-.vm-sidebar nav{display:grid;gap:5px}
+.vm-sidebar nav{display:grid;flex:none;gap:5px}
 .vm-sidebar nav a,.vm-sidebar-logout{display:flex;align-items:center;gap:13px;min-height:44px;padding:0 13px;border-radius:8px;color:#edf4f6;text-decoration:none;font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:.035em;transition:background .16s ease,color .16s ease,transform .16s ease}
 .vm-sidebar nav a>svg{width:20px;height:20px;flex:none;color:#c7d5dc}
 .vm-sidebar nav a:hover{background:#ffffff12;transform:translateX(2px)}
 .vm-sidebar nav a.active{color:#fff;background:#477f55}
 .vm-sidebar nav a.active>svg{color:#fff}
-.vm-sidebar-logout{margin-top:auto;border-top:1px solid #ffffff1a;border-radius:0;color:#cbd8dd}
+.vm-sidebar-logout{flex:none;margin-top:auto;border-top:1px solid #ffffff1a;border-radius:0;color:#cbd8dd}
 .vm .vm-menu-toggle,.vm .vm-sidebar-scrim{display:none}
 .vm-with-sidebar .vm-wrap{width:calc(100% - 64px)}
 .vm-with-sidebar .vm-location-dashboard{width:100%;margin-left:auto;margin-right:auto}
