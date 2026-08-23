@@ -11,6 +11,13 @@ test("vehicle pagination keeps Previous and Next labels visible", () => {
   assert.match(styles, /\.vm-with-sidebar \.vm-pages button\{[^}]*color:#29483a[^}]*background:#fff/s);
 });
 
+test("vehicle pagination provides clickable numbered pages", () => {
+  assert.match(source, /paginationPages\(page,list\.totalPages\)\.map/);
+  assert.match(source, /aria-current=\{pageNumber===page\?"page":undefined\}/);
+  assert.match(styles, /\.vm-page-numbers\{display:flex/);
+  assert.match(styles, /\.vm-page-numbers button\.active\{[^}]*background:#2f8742/);
+});
+
 test("disabled and hover pagination states remain readable", () => {
   assert.match(styles, /\.vm-with-sidebar \.vm-pages button:not\(:disabled\):hover\{[^}]*color:#fff[^}]*background:#477f55/s);
   assert.match(styles, /\.vm-with-sidebar \.vm-pages button:disabled\{[^}]*color:#718078[^}]*background:#f1f4f2[^}]*opacity:1/s);
@@ -19,5 +26,5 @@ test("disabled and hover pagination states remain readable", () => {
 test("mobile vehicle table keeps every row in document flow above quick actions", () => {
   assert.match(styles, /\.vm-with-sidebar \.vm-vehicle-table\{display:block;min-width:760px\}/);
   assert.match(styles, /\.vm-with-sidebar \.vm-wrap>\.vm-quick\{display:none!important\}/);
-  assert.match(styles, /\.vm-with-sidebar \.vm-pages>div\{width:100%;justify-content:space-between\}/);
+  assert.match(styles, /\.vm-with-sidebar \.vm-pages>div\{width:100%;justify-content:center;flex-wrap:wrap\}/);
 });
