@@ -1,0 +1,17 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import test from "node:test";
+
+const source = await readFile(new URL("../src/components/VehicleManager.tsx", import.meta.url), "utf8");
+const styles = await readFile(new URL("../src/style.css", import.meta.url), "utf8");
+
+test("vehicle pagination keeps Previous and Next labels visible", () => {
+  assert.match(source, />Previous<\/button>/);
+  assert.match(source, />Next<\/button>/);
+  assert.match(styles, /\.vm-with-sidebar \.vm-pages button\{[^}]*color:#29483a[^}]*background:#fff/s);
+});
+
+test("disabled and hover pagination states remain readable", () => {
+  assert.match(styles, /\.vm-with-sidebar \.vm-pages button:not\(:disabled\):hover\{[^}]*color:#fff[^}]*background:#477f55/s);
+  assert.match(styles, /\.vm-with-sidebar \.vm-pages button:disabled\{[^}]*color:#718078[^}]*background:#f1f4f2[^}]*opacity:1/s);
+});
