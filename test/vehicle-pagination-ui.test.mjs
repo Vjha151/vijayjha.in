@@ -15,3 +15,9 @@ test("disabled and hover pagination states remain readable", () => {
   assert.match(styles, /\.vm-with-sidebar \.vm-pages button:not\(:disabled\):hover\{[^}]*color:#fff[^}]*background:#477f55/s);
   assert.match(styles, /\.vm-with-sidebar \.vm-pages button:disabled\{[^}]*color:#718078[^}]*background:#f1f4f2[^}]*opacity:1/s);
 });
+
+test("mobile vehicle table keeps every row in document flow above quick actions", () => {
+  assert.match(styles, /\.vm-with-sidebar \.vm-vehicle-table\{min-width:760px;display:grid;gap:0\}/);
+  assert.doesNotMatch(styles, /\.vm-with-sidebar \.vm-vehicle-table\{min-width:760px;display:block\}/);
+  assert.match(styles, /\.vm-with-sidebar \.vm-pages>div\{width:100%;justify-content:space-between\}/);
+});
