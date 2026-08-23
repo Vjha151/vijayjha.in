@@ -36,9 +36,35 @@ test("dashboard exposes a clickable incomplete-vehicle count with pending detail
 });
 
 test("short mobile sidebars keep every navigation link reachable", () => {
-  assert.match(styles, /\.vm-sidebar\{[^}]*overflow-y:auto[^}]*overscroll-behavior:contain/);
-  assert.match(styles, /\.vm-sidebar nav\{display:grid;flex:none/);
+  assert.match(styles, /\.vm-sidebar\{[^}]*min-height:0[^}]*overflow:hidden/);
+  assert.match(styles, /\.vm-sidebar nav,\.vm-sidebar-links\{display:grid;flex:1 1 auto;min-height:0[^}]*overflow-y:auto[^}]*overscroll-behavior:contain/);
   assert.match(styles, /\.vm-sidebar-brand\{display:grid;flex:none/);
+  assert.match(styles, /\.vm-sidebar-footer\{flex:none/);
+});
+
+test("mobile sidebar exposes the complete customer navigation without admin links", () => {
+  assert.match(sidebar, /const customerNavigation=\[/);
+  assert.match(sidebar, /customerNavigation\.map\(\(\{Icon,label,href,key\}\)/);
+  assert.doesNotMatch(sidebar, /customerNavigation\.filter|ownerOnly|accountKind!=="managed"/);
+  assert.match(sidebar, /id="customer-sidebar"/);
+  assert.match(sidebar, /className="vm-sidebar-links"/);
+  assert.match(sidebar, /aria-label="Customer portal pages"/);
+  for (const label of ["Dashboard","Vehicles","Reminders","Documents","Locations","Sharing & Users","Reports","Settings","Sign out"])
+    assert.ok(sidebar.includes(label), `missing customer sidebar item ${label}`);
+  for (const route of ["/cars#dashboard","/cars","/cars#reminders","/cars#documents","/cars/account#locations","/cars/account#sharing","/api/private/vehicles/export?format=xlsx","/cars/account","/api/logout"])
+    assert.ok(sidebar.includes(route), `missing customer sidebar route ${route}`);
+  assert.doesNotMatch(sidebar, /\/admin|Admin Portal|Platform Admin/);
+  assert.equal(sidebar.match(/label:"[^"]+",href:/g)?.length,8);
+  assert.equal(sidebar.match(/className="vm-sidebar-logout"/g)?.length,1);
+  assert.doesNotMatch(styles, /\.vm-sidebar-links\{[^}]*display:none/);
+});
+
+test("customer dashboard remains separate from admin portal routing", () => {
+  assert.match(manager, /location\.hash==="#dashboard"\?"dashboard"/);
+  assert.match(manager, /"Total vehicles",stats\.totalVehicles/);
+  assert.match(manager, /"Expired",stats\.expiredDocuments/);
+  assert.match(app, /location\.pathname\.startsWith\("\/cars"\)\?<VehicleManager\/>/);
+  assert.match(app, /location\.pathname\.startsWith\("\/admin"\)\?<AdminPanel\/>/);
 });
 
 test("all customer pages retain their responsive layout coverage", () => {
@@ -54,7 +80,27 @@ test("all customer pages retain their responsive layout coverage", () => {
   ]) assert.ok(styles.includes(selector), `missing responsive UI coverage for ${selector}`);
   assert.match(styles, /@media\(max-width:700px\)/);
   assert.match(styles, /@media\(max-width:600px\)/);
+  assert.match(styles, /@media\(max-width:900px\)\{\.vm-with-sidebar \.vm-pages/);
+  assert.match(styles, /@media\(max-width:430px\)\{\.vm-with-sidebar \.vm-pages/);
   assert.match(editor, /DocumentPhotoEditor/);
+});
+
+test("360px, 390px and 412px widths use the compact pager while desktop stays unchanged", () => {
+  for (const width of [360,390,412])assert.ok(width<=430);
+  assert.match(styles, /@media\(max-width:430px\)\{\.vm-with-sidebar \.vm-pages\{padding:10px\}/);
+  assert.match(styles, /\.vm-with-sidebar \.vm-pages>div\{display:flex;[^}]*overflow-x:auto/);
+  assert.match(styles, /\.vm-with-sidebar \.vm-pages>select\{display:block;width:100%/);
+  assert.match(styles, /\.vm-with-sidebar \.vm-pages\{margin:0;padding:15px 18px/);
+});
+
+test("360px, 390px and 412px hamburger widths retain the same nine customer actions", () => {
+  for (const width of [360,390,412]){
+    assert.ok(width<=900);
+    assert.equal((sidebar.match(/label:"[^"]+",href:/g)?.length||0)+1,9);
+  }
+  assert.match(styles, /@media\(max-width:900px\)/);
+  assert.match(styles, /\.vm-sidebar\.open\{transform:translateX\(0\)\}/);
+  assert.match(styles, /\.vm-sidebar nav,\.vm-sidebar-links\{[^}]*overflow-y:auto/);
 });
 
 test("light customer controls always declare a readable foreground color", () => {
