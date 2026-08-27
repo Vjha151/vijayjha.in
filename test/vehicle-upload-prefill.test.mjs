@@ -11,6 +11,7 @@ test("document upload prefills metadata from the selected vehicle profile catego
  ])assert.match(source,new RegExp(`documentDefaults[\\s\\S]*vehicle\\?\\.${field}`),field);
  assert.match(source,/setUpload\(shared\?"First Party \/ Own Damage Insurance":category\)/);
  assert.match(source,/initialCategory=\{upload\}/);
+ assert.match(source,/lockCategory\?<input type="hidden" name="category" value=\{category\}/);
  assert.match(source,/name="document_number" value=\{documentNumber\}/);
  assert.match(source,/name="issue_date" type="date" value=\{issueDate\}/);
  assert.match(source,/name="expiry_date" type="date" value=\{expiryDate\}/);
