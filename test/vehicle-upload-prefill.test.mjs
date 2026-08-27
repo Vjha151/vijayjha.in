@@ -9,7 +9,7 @@ test("document upload prefills metadata from the selected vehicle profile catego
   "third_party_policy_number","third_party_start_date","third_party_expiry_date",
   "puc_number","puc_issue_date","puc_expiry_date"
  ])assert.match(source,new RegExp(`documentDefaults[\\s\\S]*vehicle\\?\\.${field}`),field);
- assert.match(source,/setUpload\(category\)/);
+ assert.match(source,/setUpload\(shared\?"First Party \/ Own Damage Insurance":category\)/);
  assert.match(source,/initialCategory=\{upload\}/);
  assert.match(source,/name="document_number" value=\{documentNumber\}/);
  assert.match(source,/name="issue_date" type="date" value=\{issueDate\}/);
@@ -17,5 +17,7 @@ test("document upload prefills metadata from the selected vehicle profile catego
  assert.match(source,/category\.startsWith\("RC"\)[\s\S]*vehicle\?\.purchase_date/);
  assert.match(source,/addYears\(issueDate,15\)/);
  assert.match(source,/Fuel Type<select value=\{vehicle\.fuel_type/);
+ assert.match(source,/third_party_same_as_first/);
+ assert.match(source,/d=shared\?docs\.find\(\(x:any\)=>x\.category==="First Party \/ Own Damage Insurance"\)/);
  assert.doesNotMatch(source,/\/api\/private\/cars/);
 });
