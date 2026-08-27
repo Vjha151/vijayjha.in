@@ -14,7 +14,7 @@ test("document upload prefills metadata from the selected vehicle profile catego
  assert.match(source,/name="document_number" value=\{documentNumber\}/);
  assert.match(source,/name="issue_date" type="date" value=\{issueDate\}/);
  assert.match(source,/name="expiry_date" type="date" value=\{expiryDate\}/);
- assert.match(source,/category==="RC"[\s\S]*vehicle\?\.purchase_date/);
+ assert.match(source,/category\.startsWith\("RC"\)[\s\S]*vehicle\?\.purchase_date/);
  assert.match(source,/addYears\(issueDate,15\)/);
  assert.match(source,/Fuel Type<select value=\{vehicle\.fuel_type/);
  assert.doesNotMatch(source,/\/api\/private\/cars/);
