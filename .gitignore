@@ -20,3 +20,5 @@ outputs/
 work/
 tmp/garifile-preview/
 .openai/
+
+tmp/
