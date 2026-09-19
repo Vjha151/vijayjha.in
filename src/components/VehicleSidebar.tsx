@@ -1,3 +1,4 @@
+import {VehicleBrand} from "./VehicleBrand";
 import {useState} from "react";
 import {BarChart3,Bell,Car,FileText,LayoutDashboard,LogOut,MapPin,Menu,Settings,Users} from "lucide-react";
 
@@ -17,7 +18,7 @@ export function VehicleSidebar({name,active="vehicles"}:{name?:string;active?:st
  return <>
   <button className="vm-menu-toggle" onClick={()=>setOpen(value=>!value)} aria-label="Toggle customer navigation" aria-expanded={open} aria-controls="customer-sidebar"><Menu/></button>
   <aside id="customer-sidebar" className={`vm-sidebar ${open?"open":""}`} aria-label="Customer navigation">
-   <div className="vm-sidebar-brand"><img src="/gaadifile-logo.png" alt="GaadiFile — Your Vehicle, All in One Place"/><small>{name?.split(" ")[0].toUpperCase()||"VIJAY"}</small></div>
+   <div className="vm-sidebar-brand"><VehicleBrand/><small>{name?.split(" ")[0].toUpperCase()||"VIJAY"}</small></div>
    <nav className="vm-sidebar-links" aria-label="Customer portal pages">
     {customerNavigation.map(({Icon,label,href,key})=><a className={active===key?"active":""} href={href} key={key} onClick={()=>setOpen(false)}><Icon/>{label}</a>)}
    </nav>

@@ -55,8 +55,10 @@ test("service worker is portal-scoped and never caches private APIs",async()=>{
 test("customer portal visibly uses the approved GaadiFile logo",async()=>{
  const manager=await readFile(fromRoot("src","components","VehicleManager.tsx"),"utf8");
  const sidebar=await readFile(fromRoot("src","components","VehicleSidebar.tsx"),"utf8");
- assert.match(manager,/src="\/gaadifile-logo\.png" alt="GaadiFile/);
- assert.match(sidebar,/src="\/gaadifile-logo\.png" alt="GaadiFile/);
+ const brand=await readFile(fromRoot("src","components","VehicleBrand.tsx"),"utf8");
+ assert.match(manager,/<VehicleBrand\/>/);
+ assert.match(sidebar,/<VehicleBrand\/>/);
+ assert.match(brand,/src="\/gaadifile-logo\.png" alt="GaadiFile/);
 });
 
 test("legacy customer routes redirect to /cars without changing private APIs",async()=>{

@@ -14,18 +14,20 @@ function meta(name:string,content:string){
  element.content=content;
 }
 
-export function setupVehiclePwa(){
- const portal=location.pathname==="/login"||location.pathname==="/cars"||location.pathname.startsWith("/cars/");
+export function setupVehiclePwa({standalone=false}:{standalone?:boolean}={}){
+ const portal=standalone||location.pathname==="/login"||location.pathname==="/cars"||location.pathname.startsWith("/cars/");
  if(!portal)return;
  document.title="GaadiFile";
+ if(standalone)document.title="GariFile — Your vehicle records, together";
  meta("theme-color","#102a3d");
  meta("description","GaadiFile securely manages your vehicles, documents and expiry reminders.");
  meta("application-name","GaadiFile");
  meta("apple-mobile-web-app-capable","yes");
  meta("apple-mobile-web-app-status-bar-style","black-translucent");
  meta("apple-mobile-web-app-title","GaadiFile");
+ if(standalone){meta("description","GariFile manages your vehicle documents, insurance and expiry reminders.");meta("application-name","GariFile");meta("apple-mobile-web-app-title","GariFile")}
  if(!document.head.querySelector('link[rel="manifest"]')){
-  const manifest=document.createElement("link");manifest.rel="manifest";manifest.href="/vehicle-manifest.webmanifest";document.head.append(manifest);
+  const manifest=document.createElement("link");manifest.rel="manifest";manifest.href=standalone?"/garifile-manifest.webmanifest":"/vehicle-manifest.webmanifest";document.head.append(manifest);
  }
  if(!document.head.querySelector('link[rel="apple-touch-icon"]')){
   const icon=document.createElement("link");icon.rel="apple-touch-icon";icon.href="/pwa/icon-180.png?v=2";document.head.append(icon);
@@ -35,7 +37,7 @@ export function setupVehiclePwa(){
  }
  window.addEventListener("beforeinstallprompt",event=>{event.preventDefault();installPrompt=event as InstallPromptEvent;notify()});
  window.addEventListener("appinstalled",()=>{installed=true;installPrompt=null;notify()});
- if(import.meta.env.PROD&&"serviceWorker" in navigator){let reloading=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(reloading)return;reloading=true;location.reload()});window.addEventListener("load",()=>{navigator.serviceWorker.register("/vehicle-sw.js?v=4",{scope:"/cars"}).then(registration=>registration.update()).catch(()=>{})},{once:true})}
+ if(import.meta.env.PROD&&"serviceWorker" in navigator){let reloading=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(reloading)return;reloading=true;location.reload()});window.addEventListener("load",()=>{const worker=standalone?navigator.serviceWorker.register("/garifile-sw.js?v=1",{scope:"/"}):navigator.serviceWorker.register("/vehicle-sw.js?v=4",{scope:"/cars"});worker.then(registration=>registration.update()).catch(()=>{})},{once:true})}
 }
 
 export function vehicleInstallState(){return{canInstall:!!installPrompt&&!installed,installed}}

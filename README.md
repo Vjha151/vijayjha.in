@@ -1,5 +1,7 @@
 # VijayJha.in
 
+GariFile custom-domain rollout and local preview: [deploy/GARIFILE.md](deploy/GARIFILE.md).
+
 Immersive React/Three.js portfolio with a protected SQLite-backed admin CMS.
 
 ## Local development
